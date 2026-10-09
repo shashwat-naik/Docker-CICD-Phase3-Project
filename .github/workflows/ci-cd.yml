@@ -48,3 +48,5 @@ jobs:
           context: .
           push: false
           tags: docker-mastery-demo:phase3
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
