@@ -47,7 +47,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: docker-mastery-demo
+          images: naikiam/docker-practice-project
           tags: |
             type=raw,value=phase3
             type=sha,prefix=sha-,format=short
@@ -75,3 +75,20 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: HIGH,CRITICAL
+
+      - name: Log in to Docker Hub
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image to Docker Hub
+        if: github.event_name == 'push'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
